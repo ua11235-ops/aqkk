@@ -61,6 +61,14 @@ h1{margin:0;font-size:26px;font-weight:650;letter-spacing:.5px;line-height:1.25}
 .hero-meta b{color:#fff;font-weight:600;font-variant-numeric:tabular-nums}
 .hero-meta a{color:rgba(255,255,255,.78);text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.35)}
 .hero-meta a:hover{color:#fff}
+.upd{display:inline-flex;align-items:center;gap:7px;margin-top:2px;padding:2px 9px 2px 8px;border-radius:99px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);color:rgba(255,255,255,.86);font-variant-numeric:tabular-nums}
+.upd .dot{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px rgba(74,222,128,.2);flex:0 0 auto}
+.upd.stale{background:rgba(217,145,20,.16);border-color:rgba(217,145,20,.42);color:#f7d48a}
+.upd.stale .dot{background:#f0b429;box-shadow:0 0 0 3px rgba(240,180,41,.22)}
+.upd.old{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.6)}
+.upd.old .dot{background:#9aa3b0;box-shadow:0 0 0 3px rgba(154,163,176,.2)}
+.upd b{color:#fff;font-weight:600}
+.upd .ago{opacity:.62;font-weight:400}
 
 /* ---------- kpi ---------- */
 .kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:-34px;position:relative;z-index:2}
@@ -347,8 +355,8 @@ footer .wrap{max-width:1340px}
     </div>
     <div class="hero-meta">
       数据来源：<a href="https://www.itsec.gov.cn/aqkkcp/cpgg/" target="_blank" rel="noopener">中国信息安全测评中心 · 安全可靠测评公告</a><br>
-      数据核对日期：<b>__GENERATED__</b> · 收录公告：<b>__ANNCOUNT__</b> 期<br>
-      有效期规则：自公告发布之日起 <b>三年</b>
+      收录公告：<b>__ANNCOUNT__</b> 期 · 有效期：自发布之日起 <b>三年</b><br>
+      <span class="upd" id="updBox"><i class="dot"></i><span id="updText">数据更新时间读取中…</span></span>
     </div>
   </div>
 </header>
@@ -470,6 +478,8 @@ footer .wrap{max-width:1340px}
 </div>
 
 <script>
+const GENERATED_AT = "__GENERATED__";
+
 const ANN = __ANN__;
 
 const DATA = __DATA__;
@@ -748,6 +758,39 @@ function render(){
   box.innerHTML = state.view==="group" ? renderGrouped(list) : tableHTML(list,true);
 }
 
+/* ---------------- 数据更新时间 ---------------- */
+function renderUpdated(){
+  const box = $("updBox"), txt = $("updText");
+  if(!box || !txt) return;
+
+  let gen = null;
+  try{ gen = new Date(GENERATED_AT); }catch(e){}
+  if(!gen || isNaN(gen.getTime())){
+    box.className = "upd old";
+    txt.textContent = "数据更新时间未知";
+    return;
+  }
+
+  const pad = n => String(n).padStart(2,"0");
+  const fmtLocal = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const diffMin = Math.floor((Date.now() - gen.getTime()) / 60000);
+
+  let ago;
+  if(diffMin < 1) ago = "刚刚";
+  else if(diffMin < 60) ago = `${diffMin} 分钟前`;
+  else if(diffMin < 60*24) ago = `${Math.floor(diffMin/60)} 小时前`;
+  else ago = `${Math.floor(diffMin/1440)} 天前`;
+
+  // 超过 24 小时视为采集可能中断（正常每 6 小时一次）
+  let cls = "upd";
+  if(diffMin >= 60*24*3) cls = "upd old";
+  else if(diffMin >= 60*24) cls = "upd stale";
+
+  box.className = cls;
+  txt.innerHTML = `数据更新于 <b>${fmtLocal(gen)}</b> <span class="ago">· ${ago}</span>`;
+  box.title = "采集器最后运行时间（本地时区）。GitHub Actions 每 6 小时自动采集一次。";
+}
+
 /* ---------------- KPIs ---------------- */
 function kpis(){
   const vendors = new Set(DATA.map(d=>d.v));
@@ -850,6 +893,9 @@ document.addEventListener("DOMContentLoaded", ()=>{
   kpis();
   renderAnn();
   render();
+  renderUpdated();
+  // 每分钟刷新一次“x 分钟前”
+  setInterval(renderUpdated, 60000);
 
   $("q").addEventListener("input", e=>{ state.q = e.target.value.trim(); render(); });
 
