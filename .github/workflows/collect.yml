@@ -6,9 +6,12 @@ on:
     - cron: "0 */6 * * *"
   # 允许手动触发
   workflow_dispatch:
-  # 推送代码时也跑一次
+  # 推送代码时也跑一次（忽略机器人自动提交的数据文件，避免自我触发循环）
   push:
     branches: [main]
+    paths-ignore:
+      - "data.json"
+      - "index.html"
 
 permissions:
   contents: write
@@ -63,10 +66,21 @@ jobs:
           git add data.json index.html
           if git diff --cached --quiet; then
             echo "数据无变化，跳过提交"
-          else
-            git commit -m "chore: 自动更新测评数据 $(date -u '+%Y-%m-%d %H:%M UTC')"
-            git push
+            exit 0
           fi
+          git commit -m "chore: 自动更新测评数据 $(date -u '+%Y-%m-%d %H:%M UTC')"
+          # 并发保护：若远端已有新提交，先 rebase 再重试，避免 push 被拒绝导致整个 workflow 失败
+          for i in 1 2 3; do
+            if git push; then
+              echo "推送成功"
+              exit 0
+            fi
+            echo "推送失败，第 $i 次重试：先同步远端 …"
+            git pull --rebase --autostash origin main || true
+            sleep 5
+          done
+          echo "::error::推送重试 3 次仍失败"
+          exit 1
 
       - name: 上传 Pages 产物
         uses: actions/upload-pages-artifact@v3
