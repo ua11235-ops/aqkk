@@ -1,0 +1,2136 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>安全可靠测评结果库 · 2023—2026</title>
+<style>
+:root{
+  --ink:#15171c; --ink2:#3f4550; --ink3:#7b8391; --ink4:#a2a9b4;
+  --line:#e5e8ee; --line2:#eff1f5;
+  --bg:#f5f6f8; --card:#ffffff;
+  --red:#a01f24; --red2:#c8343a; --red-soft:#fcf2f2;
+  --gold:#a9803a; --blue:#2f5fb3; --teal:#1c7a6b;
+  --r:14px;
+  --shadow:0 1px 2px rgba(16,24,40,.04), 0 10px 28px -16px rgba(16,24,40,.28);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei","PingFang SC","Hiragino Sans GB","Source Han Sans SC","Noto Sans CJK SC",sans-serif;
+  font-size:14px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+button,select,input{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.wrap{max-width:1340px;margin:0 auto;padding:0 24px}
+
+/* ---------- hero ---------- */
+.hero{
+  position:relative; color:#fff; overflow:hidden;
+  background:
+    radial-gradient(1100px 420px at 8% -30%, rgba(200,52,58,.42), transparent 62%),
+    radial-gradient(900px 380px at 92% 130%, rgba(47,95,179,.30), transparent 62%),
+    linear-gradient(180deg,#191c23 0%,#111318 100%);
+}
+.hero::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+  background-size:44px 44px;
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.7),transparent 82%);
+}
+.hero .wrap{position:relative;z-index:1;padding-top:34px;padding-bottom:56px}
+.brand{display:flex;align-items:center;gap:16px}
+.seal{
+  width:50px;height:50px;flex:0 0 auto;border-radius:11px;
+  border:1.4px solid rgba(255,255,255,.38);
+  background:linear-gradient(160deg,rgba(200,52,58,.55),rgba(160,31,36,.25));
+  display:grid;place-items:center;
+  font-family:"Songti SC","SimSun",serif;font-size:26px;font-weight:700;
+  letter-spacing:0; box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+h1{margin:0;font-size:26px;font-weight:650;letter-spacing:.5px;line-height:1.25}
+.brand p{margin:4px 0 0;color:rgba(255,255,255,.62);font-size:13px}
+.hero-meta{
+  position:absolute;right:24px;top:38px;text-align:right;
+  font-size:12px;color:rgba(255,255,255,.55);line-height:1.9;
+}
+.hero-meta b{color:#fff;font-weight:600;font-variant-numeric:tabular-nums}
+.hero-meta a{color:rgba(255,255,255,.78);text-decoration:none;border-bottom:1px dotted rgba(255,255,255,.35)}
+.hero-meta a:hover{color:#fff}
+
+/* ---------- kpi ---------- */
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:-34px;position:relative;z-index:2}
+.kpi{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--shadow);
+}
+.kpi span{display:block;font-size:12px;color:var(--ink3);letter-spacing:.3px}
+.kpi strong{display:block;margin-top:2px;font-size:26px;font-weight:650;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+.kpi em{display:block;font-style:normal;font-size:11.5px;color:var(--ink4);margin-top:2px}
+.kpi.accent strong{color:var(--red)}
+.kpi.gold strong{color:var(--gold)}
+
+/* ---------- layout ---------- */
+.layout{display:grid;grid-template-columns:258px minmax(0,1fr);gap:20px;padding:22px 0 10px;align-items:start}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+
+/* ---------- sidebar ---------- */
+aside{position:sticky;top:16px}
+.filters{padding:6px 6px 10px}
+.fgroup{padding:12px 12px 4px}
+.fgroup + .fgroup{border-top:1px dashed var(--line)}
+.flabel{
+  font-size:11px;letter-spacing:1.6px;color:var(--ink4);text-transform:uppercase;
+  margin:0 0 8px;font-weight:600;
+}
+.catlist{display:flex;flex-direction:column;gap:2px;margin:0 -4px}
+.catbtn{
+  display:flex;align-items:center;gap:8px;width:100%;text-align:left;
+  background:none;border:0;border-radius:9px;padding:8px 9px;color:var(--ink2);
+  transition:background .15s,color .15s;
+}
+.catbtn:hover{background:var(--line2)}
+.catbtn .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.catbtn .ct{font-size:11.5px;color:var(--ink4);font-variant-numeric:tabular-nums}
+.catbtn[aria-pressed="true"]{background:var(--red-soft);color:var(--red);font-weight:600}
+.catbtn[aria-pressed="true"] .ct{color:var(--red2)}
+.catbtn .dot{width:7px;height:7px;border-radius:2px;flex:0 0 auto;background:var(--ink4)}
+.catbtn[data-cat="cpu"] .dot{background:#42618f}
+.catbtn[data-cat="ai"] .dot{background:#7d52a8}
+.catbtn[data-cat="printer"] .dot{background:#8a7c50}
+.catbtn[data-cat="os"] .dot{background:#2c7f72}
+.catbtn[data-cat="db"] .dot{background:#a4543a}
+.catbtn[data-cat="all"] .dot{background:linear-gradient(135deg,#a01f24,#2f5fb3)}
+
+select{
+  width:100%;appearance:none;background:#fff url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'><path d='M2 4.5L6 8.5L10 4.5' fill='none' stroke='%237b8391' stroke-width='1.4' stroke-linecap='round'/></svg>") no-repeat right 10px center;
+  border:1px solid var(--line);border-radius:9px;padding:8px 30px 8px 11px;color:var(--ink2);
+  transition:border-color .15s,box-shadow .15s;
+}
+select:hover{border-color:#d3d8e0}
+select:focus{outline:none;border-color:var(--red2);box-shadow:0 0 0 3px rgba(200,52,58,.12)}
+.fgroup select + select{margin-top:8px}
+.reset{
+  width:calc(100% - 24px);margin:12px 12px 0;
+  border:1px solid var(--line);background:#fbfbfc;border-radius:9px;padding:8px;
+  color:var(--ink2);display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.reset:hover{background:#f4f5f8;border-color:#d6dae2}
+
+/* ---------- toolbar ---------- */
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:12px}
+.search{position:relative;flex:1 1 240px;min-width:180px}
+.search svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink4)}
+.search input{
+  width:100%;border:1px solid var(--line);border-radius:10px;background:#fbfbfc;
+  padding:9px 12px 9px 34px;transition:border-color .15s,box-shadow .15s,background .15s;
+}
+.search input::placeholder{color:#a9b0bb}
+.search input:focus{outline:none;background:#fff;border-color:var(--red2);box-shadow:0 0 0 3px rgba(200,52,58,.12)}
+.seg{display:inline-flex;background:#f2f3f6;border-radius:10px;padding:3px;gap:2px}
+.seg button{
+  border:0;background:none;border-radius:7px;padding:6px 12px;color:var(--ink3);font-size:13px;
+  transition:background .15s,color .15s,box-shadow .15s;
+}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(16,24,40,.1);font-weight:600}
+
+/* ---------- charts ---------- */
+.charts{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;margin-top:14px}
+.panel{padding:14px 16px 16px}
+.panel h3{margin:0 0 12px;font-size:12.5px;font-weight:600;color:var(--ink2);letter-spacing:.3px;display:flex;justify-content:space-between;align-items:baseline}
+.panel h3 small{font-weight:400;color:var(--ink4);font-size:11.5px}
+.bars{display:flex;flex-direction:column;gap:9px}
+.bar{display:grid;grid-template-columns:64px 1fr 46px;align-items:center;gap:10px;font-size:12px;color:var(--ink2)}
+.bar .track{display:block;height:8px;background:#f0f2f5;border-radius:99px;overflow:hidden}
+.bar .fill{display:block;height:100%;min-width:2px;border-radius:99px;background:linear-gradient(90deg,#c8343a,#a01f24);transition:width .4s cubic-bezier(.2,.7,.3,1)}
+.bar .n{text-align:right;color:var(--ink3);font-variant-numeric:tabular-nums}
+.bar .lb{color:var(--ink3);font-variant-numeric:tabular-nums;font-size:11.5px}
+.stack{display:flex;height:14px;border-radius:99px;overflow:hidden;background:#f0f2f5}
+.stack i{display:block;height:100%;transition:width .4s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:12px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend b{font-variant-numeric:tabular-nums}
+.sw{width:9px;height:9px;border-radius:3px;display:inline-block}
+.divider{height:1px;background:var(--line);margin:16px 0 12px}
+.bars.compact{gap:8px}
+.bars.compact .bar{grid-template-columns:86px 1fr 34px;font-size:11.5px}
+.bars.compact .track{height:6px}
+.bars.compact .fill{background:linear-gradient(90deg,#5c6b82,#3a4657)}
+
+/* ---------- results ---------- */
+.results-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:22px 0 10px;flex-wrap:wrap}
+.results-head h2{margin:0;font-size:15px;font-weight:650;letter-spacing:.3px}
+.results-head .cnt{color:var(--ink3);font-weight:400;font-size:12.5px;margin-left:6px}
+.results-head .cnt b{color:var(--red);font-variant-numeric:tabular-nums}
+.ghostbtn{
+  border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 12px;color:var(--ink2);
+  font-size:12.5px;display:inline-flex;align-items:center;gap:6px;
+}
+.ghostbtn:hover{background:#fafbfc;border-color:#d6dae2}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;
+  background:#fff;border:1px solid var(--line);border-radius:99px;padding:3px 6px 3px 10px;color:var(--ink2);
+}
+.chip button{border:0;background:#eef0f4;border-radius:50%;width:16px;height:16px;line-height:1;color:var(--ink3);font-size:11px;display:grid;place-items:center;padding:0}
+.chip button:hover{background:#e2e6ec;color:var(--ink)}
+
+.group{margin-bottom:18px}
+.grouphead{
+  display:flex;align-items:baseline;gap:9px;padding:2px 2px 8px;
+}
+.grouphead h3{margin:0;font-size:14px;font-weight:650}
+.grouphead .tag{font-size:11.5px;color:var(--ink4)}
+.subhead{
+  display:flex;align-items:center;gap:8px;margin:14px 2px 7px;
+  font-size:12px;color:var(--ink3);font-weight:600;letter-spacing:.4px;
+}
+.subhead::after{content:"";flex:1;height:1px;background:var(--line)}
+.subhead span{font-weight:400;color:var(--ink4);font-variant-numeric:tabular-nums}
+
+.tbl-wrap{overflow-x:auto;overflow-y:hidden;border-radius:12px;-webkit-overflow-scrolling:touch}
+table{width:100%;min-width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+thead th{
+  position:sticky;top:0;z-index:1;text-align:left;font-weight:600;font-size:11.5px;letter-spacing:.6px;
+  color:var(--ink3);background:#fafbfc;border-bottom:1px solid var(--line);padding:9px 12px;white-space:nowrap;
+}
+tbody td{border-bottom:1px solid var(--line2);padding:10px 12px;vertical-align:middle}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover{background:#fafbfe}
+tbody tr:hover .pname{color:var(--red)}
+tbody tr:last-child td{border-bottom:0}
+.pname{font-weight:600;color:var(--ink);transition:color .12s}
+.pname .k{font-weight:400;color:var(--ink4);font-size:11.5px;margin-left:6px}
+.vend{color:var(--ink2);max-width:230px}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink2)}
+.catpill{font-size:11.5px;color:var(--ink3);white-space:nowrap}
+
+.lv{display:inline-block;padding:1px 8px;border-radius:6px;font-size:11.5px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lv3{color:#8a5a12;background:#fdf4e2;border:1px solid #f1e0bd}
+.lv2{color:#1e4f9c;background:#eef3fc;border:1px solid #d8e4f8}
+.lv1{color:#14655a;background:#eaf6f3;border:1px solid #d0e9e3}
+
+.st{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;white-space:nowrap}
+.st i{width:6px;height:6px;border-radius:50%;background:#2e9e6b;box-shadow:0 0 0 3px rgba(46,158,107,.12)}
+.st.warn i{background:#d99114;box-shadow:0 0 0 3px rgba(217,145,20,.14)}
+.st.dead i{background:#a2a9b4;box-shadow:0 0 0 3px rgba(162,169,180,.16)}
+.st.warn{color:#a06c0c}
+.st.dead{color:var(--ink4)}
+.st.ok{color:#2b7f5b}
+.st em{font-style:normal;color:var(--ink4);font-variant-numeric:tabular-nums}
+
+.empty{padding:56px 20px;text-align:center;color:var(--ink3)}
+.empty b{display:block;font-size:15px;color:var(--ink2);margin-bottom:6px}
+
+/* ---------- timeline ---------- */
+.section-title{display:flex;align-items:baseline;justify-content:space-between;margin:34px 0 12px;gap:12px;flex-wrap:wrap}
+.section-title h2{margin:0;font-size:16px;font-weight:650}
+.section-title p{margin:0;font-size:12.5px;color:var(--ink3)}
+.anngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(212px,1fr));gap:12px}
+.ann{
+  text-align:left;border:1px solid var(--line);background:#fff;border-radius:12px;padding:13px 14px;
+  transition:transform .16s,box-shadow .16s,border-color .16s;box-shadow:0 1px 2px rgba(16,24,40,.03);
+}
+.ann:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:#dcdfe6}
+.ann .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ann .no{font-weight:650;font-size:13.5px}
+.ann .dt{font-size:11.5px;color:var(--ink4);font-variant-numeric:tabular-nums}
+.ann .n{margin-top:9px;display:flex;align-items:baseline;gap:3px;font-size:22px;font-weight:650;letter-spacing:-.5px;color:var(--red);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ann .n small{font-size:11.5px;font-weight:400;color:var(--ink4);letter-spacing:0}
+.ann .tags{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+.ann .tags span{font-size:10.5px;color:var(--ink3);background:#f4f5f8;border-radius:5px;padding:1px 6px}
+
+/* ---------- footer ---------- */
+footer{margin-top:36px;border-top:1px solid var(--line);padding:20px 0 40px;color:var(--ink3);font-size:12px;line-height:1.9}
+footer b{color:var(--ink2)}
+footer .wrap{max-width:1340px}
+
+/* ---------- modal ---------- */
+.overlay{
+  position:fixed;inset:0;background:rgba(18,20,25,.44);backdrop-filter:blur(3px);
+  display:none;z-index:60;padding:24px;overflow:auto;
+}
+.overlay.open{display:grid;place-items:start center}
+.sheet{
+  width:min(680px,100%);background:#fff;border-radius:16px;margin:auto;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.5);
+  animation:up .22s cubic-bezier(.2,.8,.3,1);overflow:hidden;
+}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.sheet .head{padding:20px 22px 14px;border-bottom:1px solid var(--line);position:relative}
+.sheet .head .close{
+  position:absolute;right:14px;top:14px;border:0;background:#f2f3f6;border-radius:8px;
+  width:28px;height:28px;display:grid;place-items:center;color:var(--ink3);font-size:15px;
+}
+.sheet .head .close:hover{background:#e8eaef;color:var(--ink)}
+.sheet h2{margin:0;font-size:19px;line-height:1.35;padding-right:36px;font-weight:650}
+.sheet .head .sub{margin-top:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12px;color:var(--ink3)}
+.sheet .body{padding:6px 22px 20px}
+.kv{display:grid;grid-template-columns:96px 1fr;gap:0 14px;font-size:13px}
+.kv dt{color:var(--ink4);padding:10px 0;border-bottom:1px dashed var(--line)}
+.kv dd{margin:0;padding:10px 0;border-bottom:1px dashed var(--line);color:var(--ink)}
+.kv dd.mono{font-variant-numeric:tabular-nums}
+.note{
+  margin-top:14px;background:#fbfbfc;border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;font-size:12px;color:var(--ink2);line-height:1.7;
+}
+.note b{color:var(--ink)}
+.more{margin-top:16px}
+.more h4{margin:0 0 8px;font-size:12px;color:var(--ink4);font-weight:600;letter-spacing:.6px}
+.more ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.more li{display:flex;gap:8px;align-items:baseline;font-size:12.5px;color:var(--ink2)}
+.more li span{color:var(--ink4);font-size:11.5px;font-variant-numeric:tabular-nums;margin-left:auto;white-space:nowrap}
+.more a{text-decoration:none;border-bottom:1px solid var(--line);color:var(--ink2)}
+.more a:hover{color:var(--red);border-color:var(--red2)}
+@media (max-width:640px){
+  .kv dt{white-space:nowrap}
+  .sheet .head h2{font-size:17px}
+}
+@media (max-width:560px){
+  .hero-meta br{display:none}
+}
+.srclink{
+  display:inline-flex;align-items:center;gap:6px;margin-top:14px;font-size:12.5px;color:var(--blue);
+  text-decoration:none;border-bottom:1px solid rgba(47,95,179,.3);padding-bottom:1px;
+}
+.srclink:hover{color:#1d4a92}
+
+/* ---------- responsive ---------- */
+@media (max-width:1080px){
+  .kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .charts{grid-template-columns:1fr}
+}
+@media (max-width:860px){
+  .layout{grid-template-columns:minmax(0,1fr)}
+  aside{position:static}
+  .hero-meta{position:static;text-align:left;margin-top:16px}
+  h1{font-size:22px}
+  .wrap{padding:0 16px}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:-26px}
+  .hero .wrap{padding-bottom:48px}
+  .vend{max-width:150px}
+  td.hide-s,th.hide-s{display:none}
+  .charts{gap:10px}
+  .panel{padding:12px 12px 14px}
+}
+@media (max-width:560px){
+  .kpis{grid-template-columns:1fr 1fr;gap:10px}
+  .kpi strong{font-size:22px}
+  .kpis .kpi:last-child{grid-column:1 / -1}
+  td.hide-m,th.hide-m{display:none}
+  .st em{display:none}
+  tbody td,thead th{padding-left:9px;padding-right:9px}
+  .sheet .head{padding:16px}
+  .sheet .body{padding:6px 16px 16px}
+  .kv{grid-template-columns:84px 1fr;font-size:12.5px}
+}
+@media print{
+  .hero-meta,aside,.toolbar,.charts,.anngrid,footer .no-print{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="brand">
+      <div class="seal">安</div>
+      <div>
+        <h1>安全可靠测评结果库</h1>
+        <p>中国信息安全测评中心 · 安全可靠测评公告全量整理（2023—2026 年，共 9 期）</p>
+      </div>
+    </div>
+    <div class="hero-meta">
+      数据来源：<a href="https://www.itsec.gov.cn/aqkkcp/cpgg/" target="_blank" rel="noopener">中国信息安全测评中心 · 安全可靠测评公告</a><br>
+      数据核对日期：<b>2026-11-07T15:53:45+08:00</b> · 收录公告：<b>9</b> 期<br>
+      有效期规则：自公告发布之日起 <b>三年</b>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="kpis" aria-label="概览">
+    <div class="kpi accent"><span>产品记录</span><strong id="kpiTotal">—</strong><em>按公告条目计数</em></div>
+    <div class="kpi"><span>送测单位</span><strong id="kpiVendor">—</strong><em>去重统计</em></div>
+    <div class="kpi"><span>覆盖类别</span><strong id="kpiCat">—</strong><em>CPU / 芯片 / 操作系统 / 数据库</em></div>
+    <div class="kpi"><span>当前有效</span><strong id="kpiValid">—</strong><em>未超出三年有效期</em></div>
+    <div class="kpi gold"><span>180 天内到期</span><strong id="kpiWarn">—</strong><em>需关注续测情况</em></div>
+  </section>
+
+  <div class="layout">
+    <aside>
+      <div class="card filters" aria-label="筛选">
+        <div class="fgroup">
+          <p class="flabel">类别</p>
+          <div class="catlist" id="catList"></div>
+        </div>
+        <div class="fgroup">
+          <p class="flabel">细分类型</p>
+          <select id="fSub" aria-label="细分类型"><option value="">全部细分类型</option></select>
+        </div>
+        <div class="fgroup">
+          <p class="flabel">安全可靠等级</p>
+          <select id="fLevel" aria-label="安全可靠等级">
+            <option value="">全部等级</option>
+            <option value="3">Ⅲ级（最高）</option>
+            <option value="2">Ⅱ级</option>
+            <option value="1">Ⅰ级</option>
+          </select>
+        </div>
+        <div class="fgroup">
+          <p class="flabel">通过测评时间</p>
+          <select id="fYear" aria-label="公告年份"><option value="">全部年份</option></select>
+          <select id="fPeriod" aria-label="公告期号"><option value="">全部公告期</option></select>
+        </div>
+        <div class="fgroup">
+          <p class="flabel">有效期状态</p>
+          <select id="fStatus" aria-label="有效期状态">
+            <option value="">全部状态</option>
+            <option value="valid">有效</option>
+            <option value="warn">180 天内到期</option>
+            <option value="dead">已过期</option>
+          </select>
+        </div>
+        <button class="reset" id="reset">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M13.5 8a5.5 5.5 0 1 1-1.9-4.2M13.5 2v3.5H10"/></svg>
+          重置筛选
+        </button>
+      </div>
+    </aside>
+
+    <main>
+      <div class="card toolbar">
+        <div class="search">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="4.6"/><path d="M10.6 10.6L14 14"/></svg>
+          <input id="q" type="search" placeholder="搜索产品名称、版本、送测单位、公告期号…（按 / 聚焦）" autocomplete="off">
+        </div>
+        <div class="seg" role="group" aria-label="排序">
+          <button data-sort="date-desc" aria-pressed="true">最新通过</button>
+          <button data-sort="date-asc" aria-pressed="false">最早通过</button>
+          <button data-sort="level-desc" aria-pressed="false">等级</button>
+          <button data-sort="name-asc" aria-pressed="false">名称</button>
+        </div>
+        <div class="seg" role="group" aria-label="视图">
+          <button data-view="group" aria-pressed="true">分类</button>
+          <button data-view="flat" aria-pressed="false">列表</button>
+        </div>
+      </div>
+
+      <div class="charts">
+        <div class="card panel">
+          <h3>通过测评时间分布 <small>按公告期</small></h3>
+          <div class="bars" id="chartTime"></div>
+        </div>
+        <div class="card panel">
+          <h3>等级构成 <small id="chartLvNote"></small></h3>
+          <div class="stack" id="stack"></div>
+          <div class="legend" id="legend"></div>
+          <div class="divider"></div>
+          <h3>送测单位 Top 8 <small>按通过条目数</small></h3>
+          <div class="bars compact" id="chartVendor"></div>
+        </div>
+      </div>
+
+      <div class="results-head">
+        <h2>测评结果 <span class="cnt">共 <b id="resCount">0</b> 条</span></h2>
+        <button class="ghostbtn" id="export">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v8m0 0L5 7m3 3l3-3M2.5 12.5v1a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-1"/></svg>
+          导出 CSV
+        </button>
+      </div>
+      <div class="chips" id="chips"></div>
+      <div id="results"></div>
+
+      <div class="section-title">
+        <h2>公告档案</h2>
+        <p>点击卡片按该期公告筛选 · 有效期均为发布之日起三年</p>
+      </div>
+      <div class="anngrid" id="anngrid"></div>
+    </main>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <b>数据说明</b>：本页信息整理自中国信息安全测评中心「安全可靠测评」频道发布的《安全可靠测评结果公告》（2023—2026 年全部已发布公告），
+    共 <b id="footCount">—</b> 条产品记录。<br>
+    测评对象覆盖中央处理器、人工智能训练推理芯片、打印机主控芯片、操作系统、数据库；各公告均载明「自发布之日起有效期三年」，因此<b>通过测评时间</b>取公告发布日期，<b>有效期至</b>为发布日满三年之日的前一天（系统自动计算）。<br>
+    公告等级采用 Ⅰ 级 / Ⅱ 级 / Ⅲ 级三档，本页统一规范为 Ⅰ级、Ⅱ级、Ⅲ级显示；部分产品在不同期公告中重复通过，按公告条目分别计录。<br>
+    本页为个人整理的非官方查询工具，仅供选型参考，权威信息以<a href="https://www.itsec.gov.cn/aqkkcp/cpgg/" target="_blank" rel="noopener" style="color:#2f5fb3">中国信息安全测评中心官网</a>公告原文为准。
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+const ANN = {
+ "2023-1": {
+  "label": "2023年第1号",
+  "date": "2023-12-26",
+  "guide": "安全可靠测评工作指南（试行）",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202312/t20231226_162074.html"
+ },
+ "2024-1": {
+  "label": "2024年第1号",
+  "date": "2024-05-20",
+  "guide": "安全可靠测评工作指南（试行）",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202405/t20240520_172866.html"
+ },
+ "2024-2": {
+  "label": "2024年第2号",
+  "date": "2024-09-30",
+  "guide": "安全可靠测评工作指南（试行）",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202409/t20240930_194299.html"
+ },
+ "2025-1": {
+  "label": "2025年第1号",
+  "date": "2025-03-14",
+  "guide": "安全可靠测评工作指南（试行）",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202503/t20250314_216512.html"
+ },
+ "2025-2": {
+  "label": "2025年第2号",
+  "date": "2025-08-22",
+  "guide": "安全可靠测评工作指南 V3.0",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202508/t20250822_231110.html"
+ },
+ "2025-3": {
+  "label": "2025年第3号",
+  "date": "2025-09-12",
+  "guide": "安全可靠测评工作指南 V3.0",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202509/t20250912_235645.html"
+ },
+ "2026-1": {
+  "label": "2026年第1号",
+  "date": "2026-01-16",
+  "guide": "安全可靠测评工作指南 V3.0",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202601/t20260116_249958.html"
+ },
+ "2026-2": {
+  "label": "2026年第2号",
+  "date": "2026-05-26",
+  "guide": "安全可靠测评工作指南 V3.0",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202605/t20260526_259396.html"
+ },
+ "2026-3": {
+  "label": "2026年第3号",
+  "date": "2026-09-20",
+  "guide": "安全可靠测评工作指南 V4.0",
+  "url": "https://www.itsec.gov.cn/aqkkcp/cpgg/202609/t20260920_275291.html"
+ }
+};
+
+const DATA = [
+ {
+  "n": "龙芯3A6000(C)",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 3,
+  "a": "2026-3"
+ },
+ {
+  "n": "龙芯3C3000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 3,
+  "a": "2026-3"
+ },
+ {
+  "n": "鲲鹏950",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 3,
+  "a": "2026-3"
+ },
+ {
+  "n": "兆芯处理器KH-50000",
+  "v": "上海兆芯集成电路股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2026-3"
+ },
+ {
+  "n": "威鑫H8100型微处理器",
+  "v": "中电科申泰信息科技有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2026-3"
+ },
+ {
+  "n": "海光C86-4G/H",
+  "v": "海光信息技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2026-3"
+ },
+ {
+  "n": "麒麟9001X",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2026-3"
+ },
+ {
+  "n": "昇腾950",
+  "v": "深圳市海思半导体有限公司",
+  "c": "ai",
+  "lv": 2,
+  "a": "2026-3"
+ },
+ {
+  "n": "昆仑芯M100",
+  "v": "昆仑芯（北京）科技股份有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-3"
+ },
+ {
+  "n": "龙芯2P0300",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "printer",
+  "lv": 2,
+  "a": "2026-3"
+ },
+ {
+  "n": "龙芯2P0500",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "printer",
+  "lv": 2,
+  "a": "2026-3"
+ },
+ {
+  "n": "极海KP3701",
+  "v": "极海微电子股份有限公司",
+  "c": "printer",
+  "lv": 1,
+  "a": "2026-3"
+ },
+ {
+  "n": "极海SN2701",
+  "v": "极海微电子股份有限公司",
+  "c": "printer",
+  "lv": 1,
+  "a": "2026-3"
+ },
+ {
+  "n": "银河麒麟高级服务器操作系统 V11 SP1",
+  "v": "麒麟软件有限公司",
+  "c": "os",
+  "lv": 2,
+  "a": "2026-3",
+  "k": "Linux Kernel 6.6",
+  "s": "os-server"
+ },
+ {
+  "n": "大云天元操作系统（BC-Linux）V21.10 U5",
+  "v": "中移（苏州）软件技术有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2026-3",
+  "k": "Linux Kernel 5.10",
+  "s": "os-server"
+ },
+ {
+  "n": "羲和通用数据库系统软件V1.0",
+  "v": "杭州易景数通科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-3",
+  "s": "db-central"
+ },
+ {
+  "n": "NetrixDB V3.0",
+  "v": "华为云计算技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-3",
+  "s": "db-central"
+ },
+ {
+  "n": "TDSQL集中式关系型数据库管理系统软件V10.3",
+  "v": "腾讯云计算（北京）有限责任公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-3",
+  "s": "db-central"
+ },
+ {
+  "n": "昇腾310",
+  "v": "深圳市海思半导体有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "昇腾910",
+  "v": "深圳市海思半导体有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "真武M530",
+  "v": "平头哥（上海）半导体技术有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "真武M890",
+  "v": "平头哥（上海）半导体技术有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "壁砺™ 166",
+  "v": "上海壁仞科技股份有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "DCU-3G",
+  "v": "海光信息技术股份有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "KCC-V100X 芯片",
+  "v": "上海天数智芯半导体股份有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "MXC600",
+  "v": "沐曦集成电路（上海）股份有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "PH100",
+  "v": "摩尔线程智能科技（北京）股份有限公司",
+  "c": "ai",
+  "lv": 1,
+  "a": "2026-2"
+ },
+ {
+  "n": "达梦数据库管理系统 V9",
+  "v": "武汉达梦数据库股份有限公司",
+  "c": "db",
+  "lv": 2,
+  "a": "2026-2",
+  "s": "db-central"
+ },
+ {
+  "n": "平安RASESQL集中式数据库软件V3",
+  "v": "平安科技（深圳）有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-central"
+ },
+ {
+  "n": "阿里云PolarDB数据库管理软件（MySQL版）V2.0",
+  "v": "阿里云计算有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-central"
+ },
+ {
+  "n": "海盒数据库管理系统[简称：SeaboxSQL]V21",
+  "v": "北京东方金信科技股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-central"
+ },
+ {
+  "n": "磐维数据库V3.0",
+  "v": "中移动信息技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-central"
+ },
+ {
+  "n": "GoldenDB Lite数据库V7",
+  "v": "中兴通讯股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-central"
+ },
+ {
+  "n": "OceanBase数据库软件(集中式版）V4",
+  "v": "北京奥星贝斯科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-central"
+ },
+ {
+  "n": "TaurusDB V3.0",
+  "v": "华为云计算技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-central"
+ },
+ {
+  "n": "达梦数据库管理系统（分布式版） V9",
+  "v": "武汉达梦数据库股份有限公司",
+  "c": "db",
+  "lv": 2,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "崖山分布式数据库管理系统V23",
+  "v": "深圳计算科学研究院",
+  "c": "db",
+  "lv": 2,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "GaussDB V3.0（分布式版）",
+  "v": "华为云计算技术有限公司",
+  "c": "db",
+  "lv": 2,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "GoldenDB数据库V7",
+  "v": "中兴通讯股份有限公司",
+  "c": "db",
+  "lv": 2,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "工业时序数据库管理系统 [简称：TimechoDB] V2.0",
+  "v": "天谋科技（北京）有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "天翼云TeleDB数据库软件V5.1.9",
+  "v": "天翼云科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "中国银联UPDRDB分布式数据库管理系统V2",
+  "v": "中国银联股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "华为云DWS数据仓库软件 V8",
+  "v": "华为云计算技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "阿里云云原生数据仓库AnalyticDB PostgreSQL版软件V2.0",
+  "v": "阿里云计算有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "南大通用多模多态数据库管理系统[简称：GBase 8c]V6",
+  "v": "天津南大通用数据技术股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "星环分布式数据库软件Transwarp ArgoDB V6",
+  "v": "星环信息科技（上海）股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "海盒数据库管理系统（分布式版）[简称：SeaboxSQL]V21",
+  "v": "北京东方金信科技股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "DolphinDB数据库软件 V2.0",
+  "v": "浙江智臾科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "GoldenDB EBASE V3",
+  "v": "中兴通讯股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "Kingwow（金乌）数据库V6",
+  "v": "北京自然原数科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2026-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "HarmonyOS V1.0",
+  "v": "华为终端有限公司",
+  "c": "os",
+  "lv": 2,
+  "a": "2026-1",
+  "k": "HongMeng Kernel 1.11",
+  "s": "os-desktop"
+ },
+ {
+  "n": "统信桌面操作系统 V25",
+  "v": "统信软件技术有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2026-1",
+  "k": "Linux Kernel 6.6",
+  "s": "os-desktop"
+ },
+ {
+  "n": "华为云欧拉操作系统 V3",
+  "v": "华为云计算技术有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2026-1",
+  "k": "Linux Kernel 6.6",
+  "s": "os-server"
+ },
+ {
+  "n": "阿里云服务器操作系统V4",
+  "v": "阿里云计算有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2026-1",
+  "k": "Linux Kernel 6.6",
+  "s": "os-server"
+ },
+ {
+  "n": "新支点服务器操作系统V7",
+  "v": "中兴通讯股份有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2026-1",
+  "k": "Linux Kernel 6.6",
+  "s": "os-server"
+ },
+ {
+  "n": "龙芯3B6000M",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2025-3"
+ },
+ {
+  "n": "海思麒麟9000X",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2025-3"
+ },
+ {
+  "n": "飞腾腾锐D3000M",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2025-3"
+ },
+ {
+  "n": "龙芯2K1500",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2025-3"
+ },
+ {
+  "n": "方德桌面操作系统（Pro版）V5.0",
+  "v": "中科方德软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2025-3",
+  "k": "6.6",
+  "s": "os-desktop"
+ },
+ {
+  "n": "银河麒麟桌面操作系统 V11",
+  "v": "麒麟软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2025-3",
+  "k": "6.6",
+  "s": "os-desktop"
+ },
+ {
+  "n": "银河麒麟高级服务器操作系统 V11",
+  "v": "麒麟软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2025-3",
+  "k": "6.6",
+  "s": "os-server"
+ },
+ {
+  "n": "腾讯云Linux服务器操作系统 V4",
+  "v": "腾讯云计算（北京）有限责任公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2025-3",
+  "k": "6.6",
+  "s": "os-server"
+ },
+ {
+  "n": "大云海山数据库（He3DB for PostgreSQL V2.0）",
+  "v": "中移（苏州）软件技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2025-2",
+  "s": "db-central"
+ },
+ {
+  "n": "神通数据库管理系统 V8.0",
+  "v": "天津神舟通用数据技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2025-2",
+  "s": "db-central"
+ },
+ {
+  "n": "崖山数据库管理系统 V23",
+  "v": "深圳计算科学研究院",
+  "c": "db",
+  "lv": 1,
+  "a": "2025-2",
+  "s": "db-central"
+ },
+ {
+  "n": "飞腾腾云S5000C-E",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2025-1"
+ },
+ {
+  "n": "龙芯3B6000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2025-1"
+ },
+ {
+  "n": "龙芯3C6000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2025-1"
+ },
+ {
+  "n": "申威威鑫 H8000",
+  "v": "中电科申泰信息科技有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2025-1"
+ },
+ {
+  "n": "麒麟X90",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2025-1"
+ },
+ {
+  "n": "申威WY831（GC版）",
+  "v": "中电科申泰信息科技有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2025-1"
+ },
+ {
+  "n": "兆芯处理器KX-U6980S",
+  "v": "上海兆芯集成电路股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2025-1"
+ },
+ {
+  "n": "兆芯处理器KX-6940S",
+  "v": "上海兆芯集成电路股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2025-1"
+ },
+ {
+  "n": "银河麒麟桌面操作系统V10 SP1",
+  "v": "麒麟软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2025-1",
+  "k": "5.10",
+  "s": "os-desktop"
+ },
+ {
+  "n": "天翼云CTyunOS系统 V2.0",
+  "v": "天翼云科技有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2025-1",
+  "k": "4.19",
+  "s": "os-server"
+ },
+ {
+  "n": "GaussDB V2.0（集中式版）",
+  "v": "华为云计算技术有限公司",
+  "c": "db",
+  "lv": 2,
+  "a": "2024-2",
+  "s": "db-central"
+ },
+ {
+  "n": "金仓数据库管理系统V9",
+  "v": "中电科金仓（北京）科技股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-central"
+ },
+ {
+  "n": "神通数据库管理系统 V7.0",
+  "v": "天津神舟通用数据技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-central"
+ },
+ {
+  "n": "海量数据库管理系统G100[简称：Vastbase G100] V3.0",
+  "v": "北京海量数据技术股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-central"
+ },
+ {
+  "n": "瀚高数据库管理系统 V9.0",
+  "v": "瀚高基础软件股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-central"
+ },
+ {
+  "n": "TaurusDB V2.0",
+  "v": "华为云计算技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-central"
+ },
+ {
+  "n": "平凯数据库企业版软件V7.1",
+  "v": "平凯星辰（北京）科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "达梦数据库管理系统（分布式版）[简称:DMDPC] V8.4",
+  "v": "武汉达梦数据库股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "阿里云PolarDB数据库管理软件（分布式版）V2.0",
+  "v": "阿里云计算有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "金仓分布式HTAP数据库集群软件V3",
+  "v": "中电科金仓（北京）科技股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "南大通用大规模分布式并行数据库集群系统[简称：GBase 8a MPP Cluster] V9",
+  "v": "天津南大通用数据技术股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "神通数据库管理系统（MPP集群版）V7.0",
+  "v": "天津神舟通用数据技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "虚谷数据库管理系统 V12.0",
+  "v": "成都虚谷伟业科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "腾讯云分布式数据库TDSQL管理系统V10.3",
+  "v": "腾讯云计算（北京）有限责任公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "GaussDB V2.0（分布式版）",
+  "v": "华为云计算技术有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "GoldenDB数据库 V6",
+  "v": "中兴通讯股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "OceanBase数据库软件V4",
+  "v": "北京奥星贝斯科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2024-2",
+  "s": "db-dist"
+ },
+ {
+  "n": "兆芯处理器KX-6000G",
+  "v": "上海兆芯集成电路股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2024-2"
+ },
+ {
+  "n": "兆芯处理器KX-7000",
+  "v": "上海兆芯集成电路股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2024-2"
+ },
+ {
+  "n": "飞腾腾云S5000C",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "飞腾腾珑E2000",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "飞腾腾锐D3000",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "龙芯3A5000（DA版）",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "龙芯3A6000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "龙芯3C5000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "龙芯3D5000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "海光处理器C86-4G",
+  "v": "海光信息技术股份有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "鲲鹏920 V200",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "麒麟9000C",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 2,
+  "a": "2024-1"
+ },
+ {
+  "n": "龙芯2K2000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2024-1"
+ },
+ {
+  "n": "申威SW-WY831型微处理器",
+  "v": "无锡先进技术研究院",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2024-1"
+ },
+ {
+  "n": "兆芯处理器KH-40000",
+  "v": "上海兆芯集成电路股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2024-1"
+ },
+ {
+  "n": "海光处理器C86-4G-L",
+  "v": "海光信息技术股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2024-1"
+ },
+ {
+  "n": "方德桌面操作系统 V5.0",
+  "v": "中科方德软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "5.4",
+  "s": "os-desktop"
+ },
+ {
+  "n": "统信桌面操作系统 V20",
+  "v": "统信软件技术有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "5.10",
+  "s": "os-desktop"
+ },
+ {
+  "n": "银河麒麟桌面操作系统 V10 SP1",
+  "v": "麒麟软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "5.4",
+  "s": "os-desktop"
+ },
+ {
+  "n": "华为云欧拉操作系统 V2.0",
+  "v": "华为云计算技术有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "5.10",
+  "s": "os-server"
+ },
+ {
+  "n": "阿里云服务器操作系统 V3",
+  "v": "阿里云计算有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "5.10",
+  "s": "os-server"
+ },
+ {
+  "n": "银河麒麟高级服务器操作系统 V10 SP3",
+  "v": "麒麟软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "4.19",
+  "s": "os-server"
+ },
+ {
+  "n": "腾讯云Linux服务器操作系统 V3",
+  "v": "腾讯云计算（北京）有限责任公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "5.4",
+  "s": "os-server"
+ },
+ {
+  "n": "新支点服务器操作系统 V6",
+  "v": "中兴通讯股份有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "5.10",
+  "s": "os-server"
+ },
+ {
+  "n": "凝思安全操作系统欧拉版 V6.0.99",
+  "v": "北京凝思软件股份有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "4.19",
+  "s": "os-server"
+ },
+ {
+  "n": "麒麟信安服务器操作系统 V3",
+  "v": "湖南麒麟信安科技股份有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2024-1",
+  "k": "4.19",
+  "s": "os-server"
+ },
+ {
+  "n": "鲲鹏920",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "龙芯3C5000L",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "申威1621",
+  "v": "无锡先进技术研究院",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "龙芯3A4000/3B4000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "龙芯3A5000/3B5000",
+  "v": "龙芯中科技术股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "申威SW421",
+  "v": "无锡先进技术研究院",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "申威3231",
+  "v": "无锡先进技术研究院",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "飞腾腾锐D2000",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "飞腾FT-2000",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "飞腾FT-2000+",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "盘古M900",
+  "v": "海思技术有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "飞腾腾云S2500",
+  "v": "飞腾信息技术有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "麒麟9006C",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "海光C86-3G",
+  "v": "海光信息技术股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "麒麟990",
+  "v": "深圳市海思半导体有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "海光2号C86 3230/3250/3280/5280/7250/7260/7280/7285",
+  "v": "海光信息技术股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "兆芯ZX-E KX-U6780A/KH-37800D/KX-6640MA/KX-6640A",
+  "v": "上海兆芯集成电路股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "兆芯ZX-D KX-U5580",
+  "v": "上海兆芯集成电路股份有限公司",
+  "c": "cpu",
+  "lv": 1,
+  "a": "2023-1"
+ },
+ {
+  "n": "银河麒麟桌面操作系统V10",
+  "v": "麒麟软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2023-1",
+  "k": "5.4"
+ },
+ {
+  "n": "银河麒麟高级服务器操作系统V10",
+  "v": "麒麟软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2023-1",
+  "k": "4.19"
+ },
+ {
+  "n": "统信服务器操作系统V20",
+  "v": "统信软件技术有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2023-1",
+  "k": "4.19"
+ },
+ {
+  "n": "方德高可信服务器操作系统V4.0",
+  "v": "中科方德软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2023-1",
+  "k": "4.19"
+ },
+ {
+  "n": "方德桌面操作系统V3.1",
+  "v": "中科方德软件有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2023-1",
+  "k": "4.9"
+ },
+ {
+  "n": "统信桌面操作系统V20",
+  "v": "统信软件技术有限公司",
+  "c": "os",
+  "lv": 1,
+  "a": "2023-1",
+  "k": "4.19"
+ },
+ {
+  "n": "达梦数据库管理系统V8.4",
+  "v": "武汉达梦数据库股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "PolarDB V2.0",
+  "v": "阿里云计算有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "TDSQL关系型数据库管理系统软件V8.0",
+  "v": "腾讯云计算（北京）有限责任公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "瀚高安全版数据库系统V4.5",
+  "v": "瀚高基础软件股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "虚谷数据库管理系统V11.0",
+  "v": "成都虚谷伟业科技有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "南大通用安全数据库管理系统GBase 8s V8.8",
+  "v": "天津南大通用数据技术股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "海盒通用数据库管理系统（SeaboxSQL）V11.5",
+  "v": "北京东方金信科技股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "金仓数据库管理系统KingbaseES V8",
+  "v": "北京人大金仓信息技术股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "海量数据库G100管理系统V2.2",
+  "v": "北京海量数据技术股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "万里安全数据库软件V1.0",
+  "v": "北京万里开源软件有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ },
+ {
+  "n": "优炫数据库管理系统V2.1",
+  "v": "北京优炫软件股份有限公司",
+  "c": "db",
+  "lv": 1,
+  "a": "2023-1",
+  "s": "db-central"
+ }
+];
+
+/* ---------------- metadata ---------------- */
+const CATS = [
+  {k:"cpu",     name:"中央处理器（CPU）",   short:"CPU"},
+  {k:"ai",      name:"人工智能训练推理芯片", short:"AI 芯片"},
+  {k:"printer", name:"打印机主控芯片",       short:"打印芯片"},
+  {k:"os",      name:"操作系统",             short:"操作系统"},
+  {k:"db",      name:"数据库",               short:"数据库"}
+];
+const SUBS = {"os-desktop":"桌面操作系统","os-server":"服务器操作系统","db-central":"集中式数据库","db-dist":"分布式数据库"};
+const CATNAME = Object.fromEntries(CATS.map(c=>[c.k,c.name]));
+const LVNAME = {3:"Ⅲ级",2:"Ⅱ级",1:"Ⅰ级"};
+
+/* ---------------- helpers ---------------- */
+const D = s => { const [y,m,d]=s.split("-").map(Number); return new Date(Date.UTC(y,m-1,d)); };
+const fmt = dt => dt.toISOString().slice(0,10);
+const key = dt => Math.round(dt.getTime()/86400000);
+const TODAY = (()=>{ const n=new Date(); return new Date(Date.UTC(n.getFullYear(),n.getMonth(),n.getDate())); })();
+
+function expiryOf(passDate){
+  const p = D(passDate);
+  const e = new Date(p.getTime());
+  e.setUTCFullYear(e.getUTCFullYear()+3);
+  e.setUTCDate(e.getUTCDate()-1);
+  return e;
+}
+
+DATA.forEach((d,i)=>{
+  d.id = i;
+  d.ann = ANN[d.a];
+  d.pass = d.ann.date;
+  d.exp = fmt(expiryOf(d.pass));
+  d.left = key(D(d.exp)) - key(TODAY);
+  d.status = d.left < 0 ? "dead" : (d.left <= 180 ? "warn" : "valid");
+  d.search = [d.n,d.k||"",d.v,d.ann.label,d.ann.date,SUBS[d.s]||CATNAME[d.c]].join(" ").toLowerCase();
+});
+
+/* ---------------- state ---------------- */
+const state = {q:"", cat:"all", sub:"", lv:"", year:"", period:"", status:"", sort:"date-desc", view:"group"};
+
+/* ---------------- init UI ---------------- */
+const $ = id => document.getElementById(id);
+
+function buildSidebar(){
+  const counts = {};
+  DATA.forEach(d=>counts[d.c]=(counts[d.c]||0)+1);
+  const list = $("catList");
+  let html = `<button class="catbtn" data-cat="all" aria-pressed="true">
+      <i class="dot"></i><span class="nm">全部类别</span><span class="ct">${DATA.length}</span></button>`;
+  CATS.forEach(c=>{
+    html += `<button class="catbtn" data-cat="${c.k}" aria-pressed="false">
+      <i class="dot"></i><span class="nm">${c.name}</span><span class="ct">${counts[c.k]||0}</span></button>`;
+  });
+  list.innerHTML = html;
+  list.addEventListener("click", e=>{
+    const b = e.target.closest(".catbtn"); if(!b) return;
+    state.cat = b.dataset.cat;
+    if(state.cat !== "os" && state.cat !== "db") state.sub = "";
+    if(state.cat === "os" && !state.sub.startsWith("os")) state.sub = "";
+    if(state.cat === "db" && !state.sub.startsWith("db")) state.sub = "";
+    syncSubOptions();
+    render();
+  });
+
+  const years = [...new Set(DATA.map(d=>d.a.split("-")[0]))].sort();
+  $("fYear").innerHTML = `<option value="">全部年份</option>` +
+    years.map(y=>`<option value="${y}">${y} 年</option>`).join("");
+
+  const periods = Object.entries(ANN).sort((a,b)=> b[1].date.localeCompare(a[1].date));
+  $("fPeriod").innerHTML = `<option value="">全部公告期</option>` +
+    periods.map(([k,v])=>`<option value="${k}">${v.label} · ${v.date}</option>`).join("");
+
+  $("fSub").addEventListener("change", e=>{ state.sub = e.target.value; render(); });
+  $("fLevel").addEventListener("change", e=>{ state.lv = e.target.value; render(); });
+  $("fYear").addEventListener("change", e=>{
+    state.year = e.target.value;
+    if(state.year && state.period && ANN[state.period].date.slice(0,4)!==state.year) state.period="";
+    $("fPeriod").value = state.period;
+    render();
+  });
+  $("fPeriod").addEventListener("change", e=>{
+    state.period = e.target.value;
+    if(state.period){ state.year = ANN[state.period].date.slice(0,4); $("fYear").value = state.year; }
+    render();
+  });
+  $("fStatus").addEventListener("change", e=>{ state.status = e.target.value; render(); });
+  $("reset").addEventListener("click", ()=>{
+    Object.assign(state,{q:"",cat:"all",sub:"",lv:"",year:"",period:"",status:"",sort:"date-desc",view:"group"});
+    $("q").value=""; $("fSub").value=""; $("fLevel").value=""; $("fYear").value=""; $("fPeriod").value=""; $("fStatus").value="";
+    document.querySelectorAll("[data-sort]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.sort==="date-desc")));
+    document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.view==="group")));
+    syncSubOptions(); render();
+  });
+
+  document.querySelectorAll("[data-sort]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      state.sort = b.dataset.sort;
+      document.querySelectorAll("[data-sort]").forEach(x=>x.setAttribute("aria-pressed", String(x===b)));
+      render();
+    });
+  });
+  document.querySelectorAll("[data-view]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      state.view = b.dataset.view;
+      document.querySelectorAll("[data-view]").forEach(x=>x.setAttribute("aria-pressed", String(x===b)));
+      render();
+    });
+  });
+}
+
+function syncSubOptions(){
+  const sel = $("fSub");
+  let opts = [`<option value="">全部细分类型</option>`];
+  if(state.cat==="os"||state.cat==="all"){
+    opts.push(`<option value="os-desktop">桌面操作系统</option>`,`<option value="os-server">服务器操作系统</option>`);
+  }
+  if(state.cat==="db"||state.cat==="all"){
+    opts.push(`<option value="db-central">集中式数据库</option>`,`<option value="db-dist">分布式数据库</option>`);
+  }
+  sel.innerHTML = opts.join("");
+  sel.value = state.sub || "";
+  sel.disabled = (state.cat!=="os" && state.cat!=="db" && state.cat!=="all");
+}
+
+/* ---------------- filter / sort ---------------- */
+function filtered(){
+  let arr = DATA.filter(d=>{
+    if(state.cat!=="all" && d.c!==state.cat) return false;
+    if(state.sub && d.s!==state.sub) return false;
+    if(state.lv && String(d.lv)!==state.lv) return false;
+    if(state.year && d.pass.slice(0,4)!==state.year) return false;
+    if(state.period && d.a!==state.period) return false;
+    if(state.status && d.status!==state.status) return false;
+    if(state.q){
+      const parts = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+      if(!parts.every(p=>d.search.includes(p))) return false;
+    }
+    return true;
+  });
+  const cmpName = (a,b)=> a.n.localeCompare(b.n,"zh-Hans-CN");
+  if(state.sort==="date-desc") arr.sort((a,b)=> b.pass.localeCompare(a.pass) || b.lv-a.lv || cmpName(a,b));
+  else if(state.sort==="date-asc") arr.sort((a,b)=> a.pass.localeCompare(b.pass) || b.lv-a.lv || cmpName(a,b));
+  else if(state.sort==="level-desc") arr.sort((a,b)=> b.lv-a.lv || b.pass.localeCompare(a.pass) || cmpName(a,b));
+  else arr.sort(cmpName);
+  return arr;
+}
+
+/* ---------------- render ---------------- */
+const esc = s => String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const lvBadge = lv => `<span class="lv lv${lv}">${LVNAME[lv]}</span>`;
+
+function statusCell(d){
+  const txt = d.status==="dead" ? "已过期" : (d.status==="warn" ? "即将到期" : "有效中");
+  const extra = d.status==="dead" ? `超期 ${Math.abs(d.left)} 天`
+              : (d.status==="warn" ? `剩余 ${d.left} 天` : `剩余 ${d.left} 天`);
+  return `<span class="st ${d.status==="warn"?"warn":d.status==="dead"?"dead":"ok"}"><i></i>${txt}<em>· ${extra}</em></span>`;
+}
+
+function rowHTML(d, flat){
+  const kHTML = d.k ? `<span class="k">内核 ${esc(d.k)}</span>` : "";
+  const cat = flat ? `<td class="hide-s"><span class="catpill">${CATNAME[d.c]}${d.s?` · ${SUBS[d.s]}`:""}</span></td>` : "";
+  return `<tr data-id="${d.id}" tabindex="0">
+    <td><span class="pname">${esc(d.n)}</span>${kHTML}</td>
+    ${cat}
+    <td>${lvBadge(d.lv)}</td>
+    <td class="vend hide-m">${esc(d.v)}</td>
+    <td class="num">${d.pass}</td>
+    <td class="num hide-s">${d.exp}</td>
+    <td>${statusCell(d)}</td>
+  </tr>`;
+}
+
+function tableHTML(list, flat){
+  const head = `<thead><tr>
+      <th>产品名称</th>${flat?`<th class="hide-s">类别</th>`:""}
+      <th>等级</th><th class="hide-m">送测单位</th>
+      <th>通过测评时间</th><th class="hide-s">有效期至</th><th>状态</th>
+    </tr></thead>`;
+  return `<div class="card tbl-wrap"><table>${head}<tbody>${list.map(d=>rowHTML(d,flat)).join("")}</tbody></table></div>`;
+}
+
+function renderGrouped(list){
+  let out = "";
+  CATS.forEach(c=>{
+    const items = list.filter(d=>d.c===c.k);
+    if(!items.length) return;
+    out += `<section class="group">
+      <div class="grouphead"><h3>${c.name}</h3><span class="tag">${items.length} 项</span></div>`;
+    const subs = [...new Set(items.filter(d=>d.s).map(d=>d.s))];
+    if(subs.length){
+      subs.forEach(s=>{
+        const sub = items.filter(d=>d.s===s);
+        out += `<div class="subhead">${SUBS[s]} <span>${sub.length}</span></div>${tableHTML(sub,false)}`;
+      });
+      const none = items.filter(d=>!d.s);
+      if(none.length) out += tableHTML(none,false);
+    } else {
+      out += tableHTML(items,false);
+    }
+    out += `</section>`;
+  });
+  return out;
+}
+
+function renderCharts(list){
+  const byPeriod = {};
+  list.forEach(d=>{ byPeriod[d.a]=(byPeriod[d.a]||0)+1; });
+  const periods = Object.keys(ANN).sort((a,b)=> ANN[b].date.localeCompare(ANN[a].date));
+  const max = Math.max(1, ...periods.map(p=>byPeriod[p]||0));
+  $("chartTime").innerHTML = periods.map(p=>{
+    const n = byPeriod[p]||0;
+    return `<div class="bar" title="${ANN[p].label} ${ANN[p].date} · ${n} 项">
+      <span class="lb">${ANN[p].label.replace("年第","·").replace("号","")}</span>
+      <span class="track"><span class="fill" style="width:${n?Math.max(n/max*100,3):0}%;opacity:${n?1:.18}"></span></span>
+      <span class="n">${n}</span></div>`;
+  }).join("");
+
+  const lv = {1:0,2:0,3:0};
+  list.forEach(d=>lv[d.lv]++);
+  const total = list.length || 1;
+  const cols = {1:"#1c7a6b",2:"#2f5fb3",3:"#a9803a"};
+  $("stack").innerHTML = [3,2,1].map(k=>
+    `<i style="width:${(lv[k]/total*100).toFixed(2)}%;background:${cols[k]}" title="${LVNAME[k]} ${lv[k]} 项"></i>`
+  ).join("");
+  $("legend").innerHTML = [3,2,1].map(k=>
+    `<span><i class="sw" style="background:${cols[k]}"></i>${LVNAME[k]} <b>${lv[k]}</b> · ${(lv[k]/total*100).toFixed(1)}%</span>`
+  ).join("");
+  $("chartLvNote").textContent = `共 ${list.length} 项`;
+
+  const vc = {};
+  list.forEach(d=>vc[d.v]=(vc[d.v]||0)+1);
+  const top = Object.entries(vc).sort((a,b)=> b[1]-a[1] || a[0].localeCompare(b[0],"zh-Hans-CN")).slice(0,8);
+  const vmax = Math.max(1, ...top.map(t=>t[1]));
+  $("chartVendor").innerHTML = top.length
+    ? top.map(([v,n])=>`<div class="bar" title="${v} · ${n} 项">
+        <span class="lb" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(v.replace(/(技术|信息|科技)?(股份)?有限公司$/,""))}</span>
+        <span class="track"><span class="fill" style="width:${Math.max(n/vmax*100,3).toFixed(1)}%"></span></span>
+        <span class="n">${n}</span></div>`).join("")
+    : `<div style="font-size:12px;color:#a2a9b4;padding:6px 0">无匹配数据</div>`;
+}
+
+function renderChips(){
+  const parts = [];
+  if(state.cat!=="all") parts.push(["类别", CATNAME[state.cat], "cat"]);
+  if(state.sub) parts.push(["细分", SUBS[state.sub], "sub"]);
+  if(state.lv) parts.push(["等级", LVNAME[+state.lv], "lv"]);
+  if(state.year) parts.push(["年份", state.year+" 年", "year"]);
+  if(state.period) parts.push(["公告", ANN[state.period].label, "period"]);
+  if(state.status) parts.push(["状态", {valid:"有效",warn:"180天内到期",dead:"已过期"}[state.status], "status"]);
+  if(state.q) parts.push(["关键词", state.q, "q"]);
+  const box = $("chips");
+  if(!parts.length){ box.innerHTML=""; return; }
+  box.innerHTML = parts.map(([k,v,id])=>
+    `<span class="chip">${k}：${esc(v)}<button data-clear="${id}" aria-label="移除">×</button></span>`
+  ).join("") + `<button class="chip" data-clear="all" style="background:#fff;color:#a01f24;border-color:#f0d7d8;padding:3px 10px">全部清除</button>`;
+}
+
+let VIEW = [];
+function render(){
+  const list = filtered();
+  VIEW = list;
+
+  $("resCount").textContent = list.length;
+  renderCharts(list);
+  renderChips();
+  document.querySelectorAll(".catbtn").forEach(b=>b.setAttribute("aria-pressed", String(b.dataset.cat===state.cat)));
+
+  const box = $("results");
+  if(!list.length){
+    box.innerHTML = `<div class="card empty"><b>没有匹配的产品</b>尝试更换关键词，或清除部分筛选条件。</div>`;
+    return;
+  }
+  box.innerHTML = state.view==="group" ? renderGrouped(list) : tableHTML(list,true);
+}
+
+/* ---------------- KPIs ---------------- */
+function kpis(){
+  const vendors = new Set(DATA.map(d=>d.v));
+  $("kpiTotal").textContent = DATA.length;
+  $("kpiVendor").textContent = vendors.size;
+  $("kpiCat").textContent = CATS.filter(c=>DATA.some(d=>d.c===c.k)).length;
+  $("kpiValid").textContent = DATA.filter(d=>d.status!=="dead").length;
+  $("kpiWarn").textContent = DATA.filter(d=>d.status==="warn").length;
+  $("footCount").textContent = DATA.length;
+}
+
+/* ---------------- announcement cards ---------------- */
+function renderAnn(){
+  const order = Object.entries(ANN).sort((a,b)=> b[1].date.localeCompare(a[1].date));
+  $("anngrid").innerHTML = order.map(([k,v])=>{
+    const items = DATA.filter(d=>d.a===k);
+    const cats = [...new Set(items.map(d=>CATNAME[d.c]))];
+    return `<button class="ann" data-period="${k}">
+      <div class="top"><span class="no">${v.label}</span><span class="dt">${v.date}</span></div>
+      <div class="n">${items.length}<small>项通过</small></div>
+      <div class="tags">${cats.map(c=>`<span>${c}</span>`).join("")}</div>
+    </button>`;
+  }).join("");
+  $("anngrid").addEventListener("click", e=>{
+    const b = e.target.closest(".ann"); if(!b) return;
+    state.period = b.dataset.period; state.year = ANN[state.period].date.slice(0,4);
+    $("fPeriod").value = state.period; $("fYear").value = state.year;
+    render();
+    $("results").scrollIntoView({behavior:"smooth", block:"start"});
+  });
+}
+
+/* ---------------- detail modal ---------------- */
+function openDetail(id){
+  const d = DATA[id];
+  const others = DATA.filter(x=>x.id!==d.id && x.v===d.v).slice(0,5);
+  const stTxt = d.status==="dead" ? "已过期" : (d.status==="warn" ? "180 天内到期" : "有效中");
+  $("sheet").innerHTML = `
+    <div class="head">
+      <button class="close" id="closeBtn" aria-label="关闭">✕</button>
+      <h2 id="sheetTitle">${esc(d.n)}</h2>
+      <div class="sub">${lvBadge(d.lv)}<span>${CATNAME[d.c]}${d.s?` · ${SUBS[d.s]}`:""}</span><span class="st ${d.status==="warn"?"warn":d.status==="dead"?"dead":"ok"}"><i></i>${stTxt}</span></div>
+    </div>
+    <div class="body">
+      <dl class="kv">
+        <dt>送测单位</dt><dd>${esc(d.v)}</dd>
+        <dt>通过测评时间</dt><dd class="mono"><b>${d.pass}</b>　（${ANN[d.a].label} 发布之日）</dd>
+        <dt>有效期至</dt><dd class="mono">${d.exp}${d.status==="dead"?`　<span style="color:#a2a9b4">已超期 ${Math.abs(d.left)} 天</span>`:`　<span style="color:#2b7f5b">剩余 ${d.left} 天</span>`}</dd>
+        <dt>安全可靠等级</dt><dd>${LVNAME[d.lv]}</dd>
+        ${d.k?`<dt>内核 / 版本</dt><dd>${esc(d.k)}</dd>`:""}
+        <dt>公告期号</dt><dd>${ANN[d.a].label}</dd>
+        <dt>公告日期</dt><dd class="mono">${ANN[d.a].date}</dd>
+        <dt>执行指南</dt><dd>${esc(ANN[d.a].guide)}</dd>
+        <dt>有效期</dt><dd>自公告发布之日起三年</dd>
+      </dl>
+      <div class="note"><b>说明：</b>安全可靠测评自 2023 年起按批次公布，公告未单列"评审日期"，故以公告发布日期作为通过测评时间；有效期按公告载明"自发布之日起三年"由系统推算，实际以官方公告为准。</div>
+      ${others.length?`<div class="more"><h4>同一送测单位的其他通过产品</h4><ul>
+        ${others.map(o=>`<li><a href="#" data-open="${o.id}">${esc(o.n)}</a><span>${o.pass}</span></li>`).join("")}
+      </ul></div>`:""}
+      <a class="srclink" href="${ANN[d.a].url}" target="_blank" rel="noopener">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 3.5H3.8a1.3 1.3 0 0 0-1.3 1.3v7.4a1.3 1.3 0 0 0 1.3 1.3h7.4a1.3 1.3 0 0 0 1.3-1.3V9.5"/><path d="M9.5 2.5h4v4M13 3l-5.6 5.6"/></svg>
+        查看公告原文（中国信息安全测评中心）
+      </a>
+    </div>`;
+  $("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+  $("closeBtn").onclick = closeDetail;
+  $("sheet").querySelectorAll("[data-open]").forEach(a=>{
+    a.onclick = ev=>{ ev.preventDefault(); openDetail(+a.dataset.open); };
+  });
+}
+function closeDetail(){
+  $("overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+/* ---------------- CSV ---------------- */
+function exportCSV(){
+  const rows = [["产品名称","内核/版本","类别","细分类型","安全可靠等级","送测单位","通过测评时间","公告期号","公告日期","有效期至","状态","剩余天数","公告链接"]];
+  VIEW.forEach(d=>rows.push([
+    d.n, d.k||"", CATNAME[d.c], d.s?SUBS[d.s]:"", LVNAME[d.lv], d.v, d.pass, ANN[d.a].label, ANN[d.a].date, d.exp,
+    d.status==="dead"?"已过期":d.status==="warn"?"即将到期":"有效中", d.left, ANN[d.a].url
+  ]));
+  const csv = "\ufeff" + rows.map(r=>r.map(v=>{
+    const s = String(v);
+    return /[",\n]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s;
+  }).join(",")).join("\r\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `安全可靠测评结果_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener("DOMContentLoaded", ()=>{
+  buildSidebar();
+  syncSubOptions();
+  kpis();
+  renderAnn();
+  render();
+
+  $("q").addEventListener("input", e=>{ state.q = e.target.value.trim(); render(); });
+
+  $("chips").addEventListener("click", e=>{
+    const b = e.target.closest("[data-clear]"); if(!b) return;
+    const k = b.dataset.clear;
+    if(k==="all"){
+      $("reset").click();
+    } else if(k==="q"){ state.q=""; $("q").value=""; render(); }
+    else if(k==="period"){ state.period=""; $("fPeriod").value=""; render(); }
+    else if(k==="year"){ state.year=""; $("fYear").value=""; render(); }
+    else if(k==="cat"){
+      state.cat="all"; state.sub=""; syncSubOptions(); render();
+    }
+    else if(k==="sub"){ state.sub=""; $("fSub").value=""; render(); }
+    else if(k==="lv"){ state.lv=""; $("fLevel").value=""; render(); }
+    else if(k==="status"){ state.status=""; $("fStatus").value=""; render(); }
+  });
+
+  $("results").addEventListener("click", e=>{
+    const tr = e.target.closest("tr[data-id]");
+    if(tr) openDetail(+tr.dataset.id);
+  });
+  $("results").addEventListener("keydown", e=>{
+    if(e.key==="Enter"){
+      const tr = e.target.closest("tr[data-id]");
+      if(tr) openDetail(+tr.dataset.id);
+    }
+  });
+  $("overlay").addEventListener("click", e=>{ if(e.target.id==="overlay") closeDetail(); });
+
+  $("export").addEventListener("click", exportCSV);
+
+  document.addEventListener("keydown", e=>{
+    if(e.key==="Escape") closeDetail();
+    if(e.key==="/" && document.activeElement!==$("q")){ e.preventDefault(); $("q").focus(); }
+  });
+});
+</script>
+</body>
+</html>
