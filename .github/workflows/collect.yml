@@ -1,0 +1,85 @@
+name: 采集并发布
+
+on:
+  # 定时采集：每 6 小时一次（UTC 时间）
+  schedule:
+    - cron: "0 */6 * * *"
+  # 允许手动触发
+  workflow_dispatch:
+  # 推送代码时也跑一次
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+
+      - name: 安装 Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安装依赖
+        run: pip install lxml
+
+      - name: 采集官网数据
+        id: run
+        run: |
+          python collector.py
+          echo "exit=$?" >> "$GITHUB_OUTPUT"
+        continue-on-error: true
+
+      - name: 检查结果
+        run: |
+          if [ ! -s data.json ]; then
+            echo "::error::data.json 为空，采集失败"
+            exit 1
+          fi
+          python - <<'PY'
+          import json
+          d = json.load(open("data.json", encoding="utf-8"))
+          n = len(d["products"])
+          print(f"公告 {len(d['announcements'])} 期，产品 {n} 条")
+          if n < 50:
+              raise SystemExit("产品数量异常偏少，疑似解析失败")
+          PY
+
+      - name: 提交数据变更
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data.json index.html
+          if git diff --cached --quiet; then
+            echo "数据无变化，跳过提交"
+          else
+            git commit -m "chore: 自动更新测评数据 $(date -u '+%Y-%m-%d %H:%M UTC')"
+            git push
+          fi
+
+      - name: 上传 Pages 产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+  deploy:
+    needs: collect
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署到 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
