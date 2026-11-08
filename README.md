@@ -21,10 +21,34 @@
 
 采集失败时**不会覆盖**已有的 `data.json` 与 `index.html`，避免把线上页面刷成空白。
 
+### 单期失败不会丢数据
+
+如果只是某一期公告抓取失败（超时、改版、解析为空），采集器会从上一版 `data.json`
+里把该期的公告元信息和产品条目**原样回填**，并在 `data.json` 的 `carriedOver`
+中记录沿用了哪几期；真正一条都采不到时才会整体失败并保留旧文件。
+
+`data.json` 里另有两个诊断字段，便于发现官网改版：
+
+| 字段 | 含义 |
+|---|---|
+| `failures` | 本次抓取失败 / 解析为空的公告期 |
+| `unknownTables` | 附表存在但类别关键词认不出来（官网新增了测评对象时会出现在这里） |
+| `skippedRows` | 有序号但字段解析不完整的行，需人工核对 |
+
 ## 自动更新
 
 `.github/workflows/collect.yml` 每 6 小时自动采集一次，有新公告就提交数据并重新部署 Pages。
 也可以在 Actions 页面手动点 **Run workflow** 立即采集。
+
+流水线会做一次数据校验，任一条不满足即判定失败、不提交、不部署：
+
+- `collector.py` 退出码非 0；
+- 产品记录为空或少于 50 条；
+- 某期公告在产品列表里一条记录都没有；
+- 与上一版相比产品数减少，或丢了公告期。
+
+推送失败时会先 rebase 重试；若 `data.json` / `index.html` 与远端冲突（都是生成物），
+则基于远端最新代码重新采集后再提交。
 
 ## 本地运行
 
@@ -33,6 +57,10 @@ pip install lxml
 python collector.py            # 联网采集并生成
 python collector.py --offline  # 不联网，用已有 data.json 重新生成页面
 ```
+
+> 本机网络若需走代理，`git` 用
+> `git -c http.sslBackend=openssl -c http.proxy=http://127.0.0.1:7897 ...`
+> （Windows 自带 schannel 后端在部分环境下会报 `SEC_E_NO_CREDENTIALS`）。
 
 ## 文件说明
 

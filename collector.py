@@ -121,14 +121,29 @@ def subcategory_of(title):
     return None
 
 
+def subcategory_of_name(name):
+    """附表未分（一）（二）小标题时，从产品名称里推断细分类型。"""
+    if "桌面" in name:
+        return "os-desktop"
+    if "服务器" in name or "Server" in name:
+        return "os-server"
+    return None
+
+
 def parse_announcement(page_html, url, period_label, period_key):
-    """解析一期公告，返回 (meta, rows)。"""
+    """解析一期公告，返回 (meta, rows, unknown_titles)。"""
     from lxml import html as LH
 
     doc = LH.fromstring(page_html)
     body_text = clean(doc.text_content())
 
-    m = re.search(r"(\d{4})-(\d{2})-(\d{2})", body_text)
+    # 优先取正文头部的日期节点，取不到再退化为全文首个日期
+    date_node = doc.xpath("//*[contains(@class,'date')]/text()")
+    m = None
+    if date_node:
+        m = re.search(r"(\d{4})-(\d{2})-(\d{2})", clean(" ".join(date_node)))
+    if not m:
+        m = re.search(r"(\d{4})-(\d{2})-(\d{2})", body_text)
     if not m:
         raise RuntimeError("找不到公告日期: %s" % url)
     ann_date = "%s-%s-%s" % (m.group(1), m.group(2), m.group(3))
@@ -137,6 +152,7 @@ def parse_announcement(page_html, url, period_label, period_key):
     guide = mg.group(1) if mg else ""
 
     rows = []
+    warnings = {"unknownTables": [], "skippedRows": []}
     tables = doc.xpath("//table")
     for tbl in tables:
         # 向前收集兄弟节点的文字，定位「附表X、…」与「（一）…」小标题
@@ -170,10 +186,12 @@ def parse_announcement(page_html, url, period_label, period_key):
         cat = category_of(title_core) or category_of(ann_title)
         sub = subcategory_of(sub_title) or subcategory_of(ann_title)
         if not cat:
+            # 附表存在却认不出类别：说明官网新增了测评对象，需要人工补关键词
+            warnings["unknownTables"].append(ann_title)
             continue
 
         for tr in tbl.xpath(".//tr"):
-            cells = tr.xpath("./td")
+            cells = tr.xpath("./td|./th")
             if len(cells) < 4:
                 continue
             texts = [clean(c.text_content()) for c in cells]
@@ -183,6 +201,8 @@ def parse_announcement(page_html, url, period_label, period_key):
             vendor = texts[2]
             level = norm_level(texts[3])
             if not name or not vendor or level is None:
+                # 有序号却解析不完整：属于静默丢数据，要显式报出来
+                warnings["skippedRows"].append("%s 第 %s 行: %s" % (period_label, texts[0], " / ".join(texts)))
                 continue
             item = {
                 "n": name,
@@ -195,6 +215,10 @@ def parse_announcement(page_html, url, period_label, period_key):
                 item["k"] = kernel
             if sub:
                 item["s"] = sub
+            elif cat == "os":
+                inferred = subcategory_of_name(name)
+                if inferred:
+                    item["s"] = inferred
             rows.append(item)
 
     meta = {
@@ -203,7 +227,7 @@ def parse_announcement(page_html, url, period_label, period_key):
         "guide": guide,
         "url": url,
     }
-    return meta, rows
+    return meta, rows, warnings
 
 
 def parse_list(list_html):
@@ -228,6 +252,53 @@ def parse_list(list_html):
 
 # ---------------------------------------------------------------- 主流程
 
+def load_previous():
+    """读取上一份 data.json，用于单期失败时回填，避免整期条目被抹掉。"""
+    if not os.path.exists(DATA_FILE):
+        return None
+    try:
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:                               # noqa: BLE001
+        return None
+
+
+def carry_over(payload, previous):
+    """本期抓取失败的公告期，沿用上次已采到的公告元信息与产品条目。"""
+    if not previous:
+        return 0
+    failed_keys = set()
+    for line in payload["failures"]:
+        failed_keys.add(line.split(":", 1)[0].strip())
+    if not failed_keys:
+        return 0
+
+    # failures 里是 label（如「2026年第3号」），转回 period key
+    label_to_key = {v["label"]: k for k, v in previous.get("announcements", {}).items()}
+    rescued_keys = {label_to_key[lb] for lb in failed_keys if lb in label_to_key}
+    if not rescued_keys:
+        return 0
+
+    carried = 0
+    for k in rescued_keys:
+        meta = previous["announcements"][k]
+        rows = [p for p in previous.get("products", []) if p.get("a") == k]
+        if not rows:
+            continue
+        payload["announcements"][k] = meta
+        payload["products"].extend(rows)
+        carried += len(rows)
+        print("      ↩ %s 抓取失败，沿用上次 %d 条记录" % (meta["label"], len(rows)))
+
+    if carried:
+        payload["carriedOver"] = sorted(
+            "%s(%d 条)" % (previous["announcements"][k]["label"],
+                           sum(1 for p in previous.get("products", []) if p.get("a") == k))
+            for k in rescued_keys
+        )
+    return carried
+
+
 def collect():
     print("[1/3] 拉取公告列表 …")
     list_html = fetch(LIST_URL)
@@ -236,39 +307,66 @@ def collect():
         raise RuntimeError("列表页未解析到任何公告，页面结构可能已变更")
     print("      发现 %d 期公告" % len(entries))
 
+    previous = load_previous()
+
     print("[2/3] 逐期解析 …")
     ann = {}
     products = []
     failures = []
+    unknown_tables = []
+    skipped_rows = []
     for key, label, url, title in entries:
         try:
             page = fetch(url)
-            meta, rows = parse_announcement(page, url, label, key)
+            meta, rows, warns = parse_announcement(page, url, label, key)
         except Exception as e:                      # noqa: BLE001
             failures.append("%s: %s" % (label, e))
             print("      ✗ %s 解析失败: %s" % (label, e))
             continue
+        if not rows and previous and any(
+            p.get("a") == key for p in previous.get("products", [])
+        ):
+            # 页面能打开却一条也解析不出，说明表格结构变了，不能当作「该期没产品」
+            failures.append("%s: 解析结果为空，疑似页面结构变更" % label)
+            print("      ✗ %s 解析结果为空（此前有数据），疑似页面结构变更" % label)
+            continue
         ann[key] = meta
         products.extend(rows)
+        unknown_tables.extend(warns["unknownTables"])
+        skipped_rows.extend(warns["skippedRows"])
         print("      ✓ %s  %s  %d 条" % (meta["date"], label, len(rows)))
+        for w in warns["skippedRows"]:
+            print("        ! 跳过无法解析的行 %s" % w)
 
     if not products:
         raise RuntimeError("没有解析到任何产品条目；未覆盖旧文件")
+
+    for t in unknown_tables:
+        print("      ! 附表标题无法识别类别：%s" % t)
+
+    payload = {
+        "generatedAt": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
+        "source": LIST_URL,
+        "announcements": ann,
+        "products": products,
+        "failures": failures,
+        "unknownTables": unknown_tables,
+        "skippedRows": skipped_rows,
+    }
+    carried = carry_over(payload, previous)
 
     # 稳定排序：期号升序
     def ann_order(k):
         y, n = k.split("-")
         return (int(y), int(n))
 
-    ann = {k: ann[k] for k in sorted(ann, key=ann_order)}
-
-    return {
-        "generatedAt": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
-        "source": LIST_URL,
-        "announcements": ann,
-        "products": products,
-        "failures": failures,
+    payload["announcements"] = {
+        k: payload["announcements"][k]
+        for k in sorted(payload["announcements"], key=ann_order)
     }
+    if carried:
+        print("      ↩ 共沿用 %d 条历史记录（%d 期抓取失败）" % (carried, len(failures)))
+    return payload
 
 
 def write_outputs(payload, regenerate_only=False):
@@ -330,6 +428,10 @@ def main():
     print("完成：%d 期公告，%d 条产品记录" % (len(payload["announcements"]), len(payload["products"])))
     if payload["failures"]:
         print("注意：%d 期解析失败" % len(payload["failures"]))
+    if payload.get("skippedRows"):
+        print("注意：%d 行因字段不完整被跳过（见 data.json 的 skippedRows）" % len(payload["skippedRows"]))
+    if payload.get("unknownTables"):
+        print("注意：%d 个附表无法识别类别（见 data.json 的 unknownTables）" % len(payload["unknownTables"]))
     return 0
 
 

@@ -25,6 +25,7 @@ concurrency:
 jobs:
   collect:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: 检出仓库
         uses: actions/checkout@v4
@@ -37,26 +38,79 @@ jobs:
       - name: 安装依赖
         run: pip install lxml
 
+      # 采集会覆盖 data.json，先留一份上一版做回归对比
+      - name: 备份上一版数据
+        id: baseline
+        run: |
+          if git cat-file -e HEAD:data.json 2>/dev/null; then
+            git show HEAD:data.json > /tmp/data_prev.json
+            echo "have_baseline=1" >> "$GITHUB_OUTPUT"
+          else
+            echo "have_baseline=0" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: 采集官网数据
         id: run
         run: |
+          set +e
           python collector.py
-          echo "exit=$?" >> "$GITHUB_OUTPUT"
-        continue-on-error: true
+          rc=$?
+          echo "rc=$rc" >> "$GITHUB_OUTPUT"
+          exit 0
 
       - name: 检查结果
         run: |
-          if [ ! -s data.json ]; then
-            echo "::error::data.json 为空，采集失败"
+          if [ "${{ steps.run.outputs.rc }}" != "0" ]; then
+            echo "::error::collector.py 退出码 ${{ steps.run.outputs.rc }}，本次未更新数据（线上保留上一版）"
             exit 1
           fi
-          python - <<'PY'
-          import json
+          if [ ! -s data.json ]; then
+            echo "::error::data.json 不存在或为空，采集失败，未覆盖线上数据"
+            exit 1
+          fi
+          python - "${{ steps.baseline.outputs.have_baseline }}" <<'PY'
+          import json, sys
+
           d = json.load(open("data.json", encoding="utf-8"))
-          n = len(d["products"])
-          print(f"公告 {len(d['announcements'])} 期，产品 {n} 条")
-          if n < 50:
-              raise SystemExit("产品数量异常偏少，疑似解析失败")
+          products, ann = d["products"], d["announcements"]
+          print(f"公告 {len(ann)} 期，产品 {len(products)} 条")
+          if d.get("failures"):
+              print("::warning::以下公告期本次未采集成功：" + "；".join(d["failures"]))
+          for w in d.get("skippedRows", []):
+              print(f"::warning::跳过无法解析的行 {w}")
+          for t in d.get("unknownTables", []):
+              print(f"::warning::附表无法识别类别：{t}")
+
+          errors = []
+          if not products:
+              errors.append("没有任何产品记录")
+          if len(products) < 50:
+              errors.append(f"产品数量异常偏少（{len(products)} 条），疑似解析失败")
+          empty = [k for k in ann if not any(p["a"] == k for p in products)]
+          if empty:
+              errors.append("以下公告期没有任何产品条目：" + ", ".join(empty))
+
+          # 与上一版对比：不允许数据缩水（单期失败时 collect() 应已回填历史记录）
+          if sys.argv[1] == "1" and not errors:
+              prev = json.load(open("/tmp/data_prev.json", encoding="utf-8"))
+              pn, pp = len(products), len(prev["products"])
+              if pn < pp:
+                  errors.append(f"产品数由 {pp} 减少到 {pn}，疑似数据丢失")
+              lost = set(prev["announcements"]) - set(ann)
+              if lost:
+                  errors.append("公告期丢失：" + ", ".join(sorted(lost)))
+              missing = [
+                  k for k in prev["announcements"]
+                  if k in ann and not any(p["a"] == k for p in products)
+              ]
+              if missing:
+                  errors.append("公告期产品记录丢失：" + ", ".join(sorted(missing)))
+
+          if errors:
+              for e in errors:
+                  print(f"::error::{e}")
+              raise SystemExit(1)
+          print("✓ 数据校验通过")
           PY
 
       - name: 提交数据变更
@@ -69,14 +123,25 @@ jobs:
             exit 0
           fi
           git commit -m "chore: 自动更新测评数据 $(date -u '+%Y-%m-%d %H:%M UTC')"
-          # 并发保护：若远端已有新提交，先 rebase 再重试，避免 push 被拒绝导致整个 workflow 失败
+
+          # 并发推送保护：data.json / index.html 都是生成物，
+          # rebase 冲突时直接以最新代码重新采集一遍再提交，而不是留下半截状态
           for i in 1 2 3; do
-            if git push; then
+            if git push origin HEAD:main; then
               echo "推送成功"
               exit 0
             fi
-            echo "推送失败，第 $i 次重试：先同步远端 …"
-            git pull --rebase --autostash origin main || true
+            echo "推送失败，第 $i 次重试：同步远端后重新生成 …"
+            git fetch origin main
+            if git rebase origin/main; then
+              continue
+            fi
+            echo "生成物冲突，基于远端最新代码重新采集"
+            git rebase --abort
+            git reset --hard origin/main
+            python collector.py
+            git add data.json index.html
+            git commit -m "chore: 自动更新测评数据 $(date -u '+%Y-%m-%d %H:%M UTC')" || true
             sleep 5
           done
           echo "::error::推送重试 3 次仍失败"
@@ -90,6 +155,7 @@ jobs:
   deploy:
     needs: collect
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
