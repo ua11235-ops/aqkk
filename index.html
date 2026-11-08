@@ -478,7 +478,10 @@ footer .wrap{max-width:1340px}
 </div>
 
 <script>
-const GENERATED_AT = "2026-11-08T15:06:33+00:00";
+const GENERATED_AT = "2026-11-08T23:32:35+08:00";
+
+// 自动采集周期（小时），由 collector.py 按 workflow 的 cron 注入
+const REFRESH_HOURS = 24;
 
 const ANN = {
  "2023-1": {
@@ -2030,14 +2033,15 @@ function renderUpdated(){
   else if(diffMin < 60*24) ago = `${Math.floor(diffMin/60)} 小时前`;
   else ago = `${Math.floor(diffMin/1440)} 天前`;
 
-  // 超过 24 小时视为采集可能中断（正常每 6 小时一次）
+  // 阈值随采集周期走：留出 1.5 倍余量，容忍定时任务的排队延迟与偶发跳过
+  const CYCLE = REFRESH_HOURS * 60;
   let cls = "upd";
-  if(diffMin >= 60*24*3) cls = "upd old";
-  else if(diffMin >= 60*24) cls = "upd stale";
+  if(diffMin >= CYCLE * 4) cls = "upd old";
+  else if(diffMin >= CYCLE * 1.5) cls = "upd stale";
 
   box.className = cls;
   txt.innerHTML = `数据更新于 <b>${fmtLocal(gen)}</b> <span class="ago">· ${ago}</span>`;
-  box.title = "采集器最后运行时间（本地时区）。GitHub Actions 每 6 小时自动采集一次。";
+  box.title = `采集器最后运行时间（本地时区）。GitHub Actions 每 ${REFRESH_HOURS} 小时自动采集一次。`;
 }
 
 /* ---------------- KPIs ---------------- */

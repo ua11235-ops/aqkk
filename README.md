@@ -37,8 +37,12 @@
 
 ## 自动更新
 
-`.github/workflows/collect.yml` 每 6 小时自动采集一次，有新公告就提交数据并重新部署 Pages。
+`.github/workflows/collect.yml` 每天自动采集一次（UTC 00:17，北京时间 08:17），有新公告就提交数据并重新部署 Pages。
 也可以在 Actions 页面手动点 **Run workflow** 立即采集。
+
+采集周期由 workflow 里的 cron 单一决定，`collector.py` 会解析它并注入页面：
+页头的「数据更新于」按周期自动计算陈旧阈值（超过 1.5 个周期变黄、4 个周期变灰），
+改频率只需要动 cron 一处。
 
 流水线会做一次数据校验，任一条不满足即判定失败、不提交、不部署：
 

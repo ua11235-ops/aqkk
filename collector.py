@@ -27,10 +27,39 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(BASE_DIR, "data.json")
 INDEX_FILE = os.path.join(BASE_DIR, "index.html")
 TEMPLATE_FILE = os.path.join(BASE_DIR, "template.html")
+WORKFLOW_FILE = os.path.join(BASE_DIR, ".github", "workflows", "collect.yml")
 
 LIST_URL = "https://www.itsec.gov.cn/aqkkcp/cpgg/"
 SITE = "https://www.itsec.gov.cn/aqkkcp/cpgg/"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+DEFAULT_REFRESH_HOURS = 24
+
+# ---------------------------------------------------------------- 配置
+
+def refresh_hours():
+    """从 workflow 的 schedule cron 推导采集周期（小时），避免页面文案与定时配置脱节。
+
+    只支持「固定间隔」写法（如 ``0 */6 * * *`` / ``17 0 * * *``）；解析不了时用默认值。
+    """
+    if not os.path.exists(WORKFLOW_FILE):
+        return DEFAULT_REFRESH_HOURS
+    with open(WORKFLOW_FILE, "r", encoding="utf-8") as f:
+        text = f.read()
+    m = re.search(r'cron:\s*["\']([^"\']+)["\']', text)
+    if not m:
+        return DEFAULT_REFRESH_HOURS
+    fields = m.group(1).split()
+    if len(fields) != 5:
+        return DEFAULT_REFRESH_HOURS
+    minute, hour = fields[0], fields[1]
+    step = re.fullmatch(r"\*/(\d+)", hour)
+    if step and re.fullmatch(r"\d+", minute):
+        hours = int(step.group(1))
+        return hours if hours > 0 else DEFAULT_REFRESH_HOURS
+    if re.fullmatch(r"\d+", hour):
+        return 24                      # 每天固定一个时刻
+    return DEFAULT_REFRESH_HOURS
+
 
 # ---------------------------------------------------------------- 网络
 
@@ -347,6 +376,7 @@ def collect():
     payload = {
         "generatedAt": datetime.now(timezone.utc).astimezone().isoformat(timespec="seconds"),
         "source": LIST_URL,
+        "refreshHours": refresh_hours(),
         "announcements": ann,
         "products": products,
         "failures": failures,
@@ -386,6 +416,9 @@ def write_outputs(payload, regenerate_only=False):
     html = html.replace("__GENERATED__", payload["generatedAt"])
     html = html.replace("__ANNCOUNT__", str(len(payload["announcements"])))
     html = html.replace("__YEARSPAN__", year_span(payload["announcements"]))
+    # 旧版 data.json 没有 refreshHours，此时回落到 workflow 当前配置
+    hours = payload.get("refreshHours") or refresh_hours()
+    html = html.replace("__REFRESH_HOURS__", str(hours))
 
     with open(INDEX_FILE, "w", encoding="utf-8") as f:
         f.write(html)
@@ -412,6 +445,8 @@ def main():
             return 1
         with open(DATA_FILE, "r", encoding="utf-8") as f:
             payload = json.load(f)
+        # 同步采集周期，便于离线只改页面文案时也保持一致
+        payload["refreshHours"] = refresh_hours()
         print("[离线] 使用已有 data.json 重新生成 …")
         write_outputs(payload, regenerate_only=True)
         return 0
